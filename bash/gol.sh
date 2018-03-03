@@ -90,13 +90,27 @@ update_grid() {
     grid=("${new_grid[@]}")
 }
 
-# Main function to run the game of life
+# Function to check if all cells are dead
+all_dead() {
+    for ((i = 0; i < HEIGHT; i++)); do
+        if [[ ${grid[i]} == *"$ALIVE"* ]]; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Main function to run the game
 run_gol() {
     initialize_grid
     while true; do
         print_grid
         update_grid
-        sleep 0.1
+        sleep 0.5
+        if all_dead; then
+            echo "☠ All cells are dead..."
+            break
+        fi
     done
 }
 
