@@ -10,6 +10,7 @@ HEIGHT=16
 
 # Create the initial grid
 grid=()
+prev_grid=()
 
 # Function to print the grid and score
 print_grid() {
@@ -106,18 +107,32 @@ all_dead() {
     return 0
 }
 
+# Function to check if the current grid state is the same as the previous state
+grid_repeats() {
+    if [ "${grid[*]}" == "${prev_grid[*]}" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Main function to run the game of life
 run_gol() {
     SECONDS=0
     initialize_grid
     while true; do
         print_grid
-        update_grid
-        sleep 0.5
         if all_dead; then
             echo "☠ All cells are dead..."
             break
         fi
+        if grid_repeats; then
+            echo "♻ The cell pattern is persistent. Exiting..."
+            break
+        fi
+        prev_grid=("${grid[@]}")
+        update_grid
+        sleep 0.5
     done
 }
 
