@@ -16,6 +16,17 @@ The state of the grid evolves over time according to a set of simple rules, whic
 4. Repeats the process, updating the grid and printing it, to simulate the passage of time in the game.
 5. The simulation stops if all cells are dead or if the pattern repeats twice in a row.
 
+```mermaid
+graph LR
+    A[🏁 Initialize Grid] --> B[🧮 Print Grid]
+    B --> C[👾  Update Grid]
+    C --> D{☠️ All Cells Dead?}
+    D -- ✅ Yes --> E[🛑 Stop Simulation]
+    D -- ❌ No --> F{♻️ Pattern Repeats?}
+    F -- ✅ Yes --> E
+    F -- ❌ No --> B
+```
+
 ## Usage
 
 Run the script with optional arguments for width, height, and seed:
@@ -44,4 +55,4 @@ Run with a custom width, height, and seed:
 ./gol.sh -w 20 -h 10 -s 12345
 ```
 
-- The simulation stops automatically if all cells are dead or if the pattern repeats.
+The simulation stops automatically if all cells are dead or if the pattern repeats.
