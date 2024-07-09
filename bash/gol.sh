@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Constants for the game
-ALIVE="◘"
-DEAD="·"
+ALIVE="█"
+DEAD="░"
 
-# Initialize the grid with a given width and height
+# Default values for the grid size and seed
 WIDTH=32
 HEIGHT=16
+SEED=$RANDOM
 
 # Create the initial grid
 grid=()
@@ -21,6 +22,7 @@ print_grid() {
     echo ""
     echo "Time elapsed: ${SECONDS} seconds"
     echo "Alive cells: ${alive_cells_count}"
+    echo "Seed: ${SEED}"
 }
 
 # Function to initialize the grid with a random state
@@ -116,18 +118,39 @@ grid_repeats() {
     fi
 }
 
+# Function to parse command line arguments
+parse_args() {
+    while getopts ":w:h:s:" opt; do
+        case $opt in
+        w) WIDTH=$OPTARG ;;
+        h) HEIGHT=$OPTARG ;;
+        s) SEED=$OPTARG ;;
+        \?)
+            echo "Invalid option -$OPTARG" >&2
+            exit 1
+            ;;
+        :)
+            echo "Option -$OPTARG requires an argument." >&2
+            exit 1
+            ;;
+        esac
+    done
+}
+
 # Main function to run the game of life
 run_gol() {
     SECONDS=0
+    parse_args "$@"
+    RANDOM=$SEED
     initialize_grid
     while true; do
         print_grid
         if all_dead; then
-            echo "☠ All cells are dead..."
+            echo "☠ All cells are dead! Exiting..."
             break
         fi
         if grid_repeats; then
-            echo "♻ The cell pattern is persistent. Exiting..."
+            echo "♻ The cell pattern is persistent! Exiting..."
             break
         fi
         prev_grid=("${grid[@]}")
@@ -137,4 +160,4 @@ run_gol() {
 }
 
 # Run the game of life
-run_gol
+run_gol "$@"
