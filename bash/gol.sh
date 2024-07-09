@@ -11,12 +11,15 @@ HEIGHT=16
 # Create the initial grid
 grid=()
 
-# Function to print the grid
+# Function to print the grid and score
 print_grid() {
     clear
     for ((i = 0; i < HEIGHT; i++)); do
         echo "${grid[i]}"
     done
+    echo ""
+    echo "Time elapsed: ${SECONDS} seconds"
+    echo "Alive cells: ${alive_cells_count}"
 }
 
 # Function to initialize the grid with a random state
@@ -63,6 +66,7 @@ count_alive_neighbors() {
 # Function to update the grid to the next generation
 update_grid() {
     new_grid=()
+    alive_cells_count=0
 
     for ((i = 0; i < HEIGHT; i++)); do
         new_row=""
@@ -75,10 +79,12 @@ update_grid() {
                     new_row+=$DEAD
                 else
                     new_row+=$ALIVE
+                    ((alive_cells_count++))
                 fi
             else
                 if ((alive_neighbors == 3)); then
                     new_row+=$ALIVE
+                    ((alive_cells_count++))
                 else
                     new_row+=$DEAD
                 fi
@@ -100,8 +106,9 @@ all_dead() {
     return 0
 }
 
-# Main function to run the game
+# Main function to run the game of life
 run_gol() {
+    SECONDS=0
     initialize_grid
     while true; do
         print_grid
@@ -114,5 +121,5 @@ run_gol() {
     done
 }
 
-# Run the game
+# Run the game of life
 run_gol
